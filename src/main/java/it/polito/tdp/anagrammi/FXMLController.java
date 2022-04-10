@@ -9,9 +9,15 @@
 package it.polito.tdp.anagrammi;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 import it.polito.tdp.anagrammi.model.Model;
+import it.polito.tdp.anagrammi.model.RightWord;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -45,16 +51,34 @@ public class FXMLController {
 
     @FXML
     void doAnagramma(ActionEvent event) {//AGGIUNGERE IN FUTURO CONTROLLI SUL TESTO INPUT
-
-    	String p;
-    	//txtInput.getText(Integer.parseInt(p);//
+       // Model model = new Model();
+    	txtOutputRight.clear();
+    	txtOutputRight.setDisable(false);
+    	txtOutputWrong.clear();
+    	txtOutputWrong.setDisable(false);
+    	String p = txtInput.getText().toLowerCase();
+    	if(!Pattern.matches("[a-zA-Z]+", p)) {
+    		System.out.println("Inserisci una parola formata da sole lettere!");
+    		return;
+    	}
+    	Map<String, RightWord> risultato = new HashMap<String, RightWord>();
+    	risultato = model.getAnagrammi(p);
+    	for(String key: risultato.keySet()) {
+    		RightWord r = new RightWord(key, risultato.get(key).isRight());
+    		if(!r.isRight())
+    			txtOutputWrong.appendText(r.getWord()+"\n");
+    		else
+    			txtOutputRight.appendText(r.getWord()+"\n");
+    	}
     	
     }
 
     @FXML
     void doReset(ActionEvent event) {
     	txtOutputRight.clear();
+    	txtOutputRight.setDisable(true);
     	txtOutputWrong.clear();
+    	txtOutputWrong.setDisable(false);
     	txtInput.clear();
 
     }
